@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Editar Receita</title>
+    <style>
+      /* ... estilos existentes ... */
+
+      .star {
+        font-size: 1.8rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .star.filled {
+        color: #f39c12;
+        text-shadow: 0 0 4px #f39c12aa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Editar Receita</h1>
+    <div class="form-card">
+      <form>
+        <!-- ... campos existentes ... -->
+
+        <label for="classificacao">Classificação (0 a 10)</label>
+        <div class="stars" id="classificacao">
+          <!-- 10 estrelas -->
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+          <span class="star" data-value="6">★</span>
+          <span class="star" data-value="7">★</span>
+          <span class="star" data-value="8">★</span>
+          <span class="star" data-value="9">★</span>
+          <span class="star" data-value="10">★</span>
+        </div>
+
+        <label for="dificuldade">Nível de Dificuldade (0 a 10)</label>
+        <div class="stars" id="dificuldade">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+          <span class="star" data-value="6">★</span>
+          <span class="star" data-value="7">★</span>
+          <span class="star" data-value="8">★</span>
+          <span class="star" data-value="9">★</span>
+          <span class="star" data-value="10">★</span>
+        </div>
+
+        <!-- ... resto do form ... -->
+
+      </form>
+    </div>
+
+    <script>
+      function setupStarRating(containerId) {
+        const container = document.getElementById(containerId);
+        const stars = container.querySelectorAll('.star');
+        let selectedValue = 0;
+
+        stars.forEach(star => {
+          const value = parseInt(star.dataset.value);
+
+          star.addEventListener('click', () => {
+            selectedValue = value;
+            updateStars();
+          });
+
+          star.addEventListener('mouseover', () => {
+            highlightStars(value);
+          });
+
+          star.addEventListener('mouseout', () => {
+            highlightStars(selectedValue);
+          });
+        });
+
+        function updateStars() {
+          stars.forEach(star => {
+            const val = parseInt(star.dataset.value);
+            star.classList.toggle('filled', val <= selectedValue);
+          });
+        }
+
+        function highlightStars(value) {
+          stars.forEach(star => {
+            const val = parseInt(star.dataset.value);
+            star.classList.toggle('filled', val <= value);
+          });
+        }
+      }
+
+      setupStarRating('classificacao');
+      setupStarRating('dificuldade');
+    </script>
+  </body>
+</html>

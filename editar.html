@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Editar Receita</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(to bottom right, #fff8f0, #ffe9d6);
+        margin: 0;
+        padding: 20px;
+        animation: fadeIn 0.8s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      h1 {
+        text-align: center;
+        color: #d35400;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 0 #fddbb0;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+      }
+      .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+        animation: slideIn 0.6s ease-out;
+      }
+      @keyframes slideIn {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      label {
+        display: block;
+        margin-top: 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #333;
+      }
+      .required::after {
+        content: ' *';
+        color: red;
+      }
+      input, textarea, select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: 0.3s;
+        background-color: #fffefc;
+      }
+      input:focus, textarea:focus, select:focus {
+        border-color: #f39c12;
+        outline: none;
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.5);
+      }
+      .inline-group {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .inline-group .field {
+        flex: 1;
+        min-width: 140px;
+      }
+      /* Estilo custo e tempo menores */
+      .inline-group.small input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+      }
+      /* Preview Imagem e Vídeo */
+      .preview-img {
+        display: block;
+        max-width: 100%;
+        max-height: 200px;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      .video-preview {
+        margin-top: 10px;
+        width: 100%;
+        height: 315px;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      /* Botão */
+      button {
+        background: linear-gradient(to right, #f39c12, #e67e22);
+        color: white;
+        padding: 14px 28px;
+        border: none;
+        margin-top: 30px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      }
+      button:hover {
+        background: linear-gradient(to right, #e67e22, #d35400);
+        transform: scale(1.05);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      }
+      /* Estrelas para classificação e dificuldade */
+      .stars {
+        display: flex;
+        gap: 5px;
+        user-select: none;
+        margin-top: 8px;
+      }
+      .star {
+        font-size: 1.8rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .star.filled {
+        color: #f39c12;
+        text-shadow: 0 0 4px #f39c12aa;
+      }
+      .star:hover,
+      .star:hover ~ .star {
+        color: #f39c12;
+      }
+      /* Palavras-chave estilo tags */
+      .tag-container {
+        margin-top: 8px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 8px;
+        min-height: 44px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        background: #fffefc;
+        transition: border-color 0.3s;
+      }
+      .tag-container:focus-within {
+        border-color: #f39c12;
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.5);
+      }
+      .tag {
+        background: #f39c12;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        animation: tagPop 0.3s ease forwards;
+      }
+      @keyframes tagPop {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      .tag button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.1rem;
+        line-height: 1;
+        padding: 0 4px 0 0;
+      }
+      /* Campo input para adicionar tags */
+      .tag-input {
+        flex: 1;
+        border: none;
+        font-size: 1rem;
+        padding: 6px 4px;
+        min-width: 80px;
+        background: transparent;
+        outline: none;
+      }
+      /* Rendimento com unidade */
+      .rendimento-field {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .rendimento-field input {
+        flex: 1;
+        max-width: 80px;
+      }
+      .rendimento-unit {
+        font-size: 1rem;
+        color: #666;
+        user-select: none;
+      }
+      .star {
+        font-size: 1.8rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .star.filled {
+        color: #f39c12;
+        text-shadow: 0 0 4px #f39c12aa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Editar Receita</h1>
+    <div class="form-card">
+      <form>
+
+        <label for="nome" class="required">Nome da Receita</label>
+        <input type="text" id="nome" name="nome" required />
+
+        <div class="inline-group small">
+          <div class="field">
+            <label for="tempo" class="required">Tempo de Preparo</label>
+            <input type="time" id="tempo" name="tempo" required />
+          </div>
+          <div class="field">
+            <label for="custo">Custo</label>
+            <input type="text" id="custo" name="custo" placeholder="R$ 0,00" />
+          </div>
+        </div>
+
+        <label for="tipoReceita" class="required">Tipo da Receita</label>
+        <select id="tipoReceita" name="tipoReceita" required>
+          <option value="" disabled selected>Escolha um tipo...</option>
+          <option value="entrada">Entrada</option>
+          <option value="petisco">Petisco</option>
+          <option value="almoco">Almoço</option>
+          <option value="jantar">Jantar</option>
+          <option value="prato-principal">Prato Principal</option>
+          <option value="sobremesa">Sobremesa</option>
+          <option value="bebida">Bebida</option>
+          <option value="lanche">Lanche</option>
+          <option value="outro">Outro</option>
+        </select>
+
+        <label for="palavrasChave">Palavras-chave</label>
+        <div class="tag-container" tabindex="0" id="tagContainer">
+          <input type="text" id="tagInput" class="tag-input" placeholder="Digite e pressione Enter" />
+        </div>
+
+        <label for="rendimento">Rendimento</label>
+        <div class="rendimento-field">
+          <input type="number" id="rendimento" name="rendimento" min="1" placeholder="Ex: 4" />
+          <span class="rendimento-unit">porções</span>
+        </div>
+
+        <label for="classificacao">Classificação (0 a 10)</label>
+        <div class="stars" id="classificacao">
+          <!-- 10 estrelas -->
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+          <span class="star" data-value="6">★</span>
+          <span class="star" data-value="7">★</span>
+          <span class="star" data-value="8">★</span>
+          <span class="star" data-value="9">★</span>
+          <span class="star" data-value="10">★</span>
+        </div>
+
+        <label for="dificuldade">Nível de Dificuldade (0 a 10)</label>
+        <div class="stars" id="dificuldade">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+          <span class="star" data-value="6">★</span>
+          <span class="star" data-value="7">★</span>
+          <span class="star" data-value="8">★</span>
+          <span class="star" data-value="9">★</span>
+          <span class="star" data-value="10">★</span>
+        </div>
+
+        <label for="imagem">Imagem da Receita</label>
+        <input type="file" id="uploadImagem" accept="image/*" />
+        <label for="imagem">ou insira uma URL:</label>
+        <input type="url" id="imagem" name="imagem" />
+
+        <img id="imgPreview" class="preview-img" style="display:none;" alt="Preview da imagem" />
+
+        <label for="video">Link do Vídeo</label>
+        <input type="url" id="video" name="video" />
+        <iframe id="videoPreview" class="video-preview" style="display:none;" allowfullscreen></iframe>
+
+        <label for="ingredientes" class="required">Ingredientes</label>
+        <textarea id="ingredientes" name="ingredientes" rows="5" required></textarea>
+
+        <label for="preparo" class="required">Modo de Preparo</label>
+        <textarea id="preparo" name="preparo" rows="5" required></textarea>
+
+        <label for="comentarios">Comentários</label>
+        <textarea id="comentarios" name="comentarios" rows="3"></textarea>
+
+        <button type="submit">Salvar Receita</button>
+      </form>
+    </div>
+
+    <script>
+      // Máscara simples para custo
+      const custoInput = document.getElementById('custo');
+      custoInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = (parseFloat(value) / 100).toFixed(2) + '';
+        if(isNaN(value)) {
+          e.target.value = '';
+          return;
+        }
+        e.target.value = 'R$ ' + value.replace('.', ',');
+      });
+
+      // Preview da imagem upload ou URL
+      const uploadImagem = document.getElementById('uploadImagem');
+      const imgInput = document.getElementById('imagem');
+      const imgPreview = document.getElementById('imgPreview');
+
+      uploadImagem.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const url = URL.createObjectURL(file);
+        imgPreview.src = url;
+        imgPreview.style.display = 'block';
+      });
+      imgInput.addEventListener('input', function(e) {
+        const url = e.target.value.trim();
+        if(url && (url.startsWith('http://') || url.startsWith('https://'))) {
+          imgPreview.src = url;
+          imgPreview.style.display = 'block';
+        } else {
+          imgPreview.style.display = 'none';
+        }
+      });
+
+      // Preview vídeo do YouTube
+      const videoInput = document.getElementById('video');
+      const videoPreview = document.getElementById('videoPreview');
+
+      videoInput.addEventListener('input', function(e) {
+        const url = e.target.value.trim();
+        const id = extractYouTubeID(url);
+        if(id) {
+          videoPreview.src = `https://www.youtube.com/embed/${id}`;
+          videoPreview.style.display = 'block';
+        } else {
+          videoPreview.style.display = 'none';
+          videoPreview.src = '';
+        }
+      });
+      function extractYouTubeID(url) {
+        // Extraí ID de link padrão ou curto do YouTube
+        const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/;
+        const match = url.match(regExp);
+        return (match && match[1]) ? match[1] : null;
+      }
+
+      // Sistema de estrelas interativas (0-10)
+function starRating(containerId) {
+  const container = document.getElementById(containerId);
+  const stars = container.querySelectorAll('.star');
+  let selectedValue = 0;
+
+  stars.forEach(star => {
+    star.addEventListener('mouseover', () => {
+      fillStars(stars, star.dataset.value);
+    });
+    star.addEventListener('mouseout', () => {
+      fillStars(stars, selectedValue);
+    });
+    star.addEventListener('click', () => {
+      selectedValue = star.dataset.value;
+      fillStars(stars, selectedValue);
+    });
+  });
+
+  function fillStars(stars, count) {
+    stars.forEach(s => {
+      s.classList.toggle('filled', s.dataset.value <= count);
+    });
+  }
+}
+
+      starRating('classificacao');
+      starRating('dificuldade');
+
+      // Tags input simples para palavras-chave
+      const tagContainer = document.getElementById('tagContainer');
+      const tagInput = document.getElementById('tagInput');
+
+      tagInput.addEventListener('keydown', function(e) {
+        if(e.key === 'Enter' && tagInput.value.trim() !== '') {
+          e.preventDefault();
+          addTag(tagInput.value.trim());
+          tagInput.value = '';
+        }
+      });
+
+      function addTag(text) {
+        // Evita duplicatas
+        const tags = [...tagContainer.querySelectorAll('.tag')].map(t => t.textContent.slice(0, -1));
+        if(tags.includes(text)) return;
+
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = text;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.textContent = '×';
+        closeBtn.onclick = () => tag.remove();
+
+        tag.appendChild(closeBtn);
+        tagContainer.insertBefore(tag, tagInput);
+      }
+      function setupStarRating(containerId) {
+        const container = document.getElementById(containerId);
+        const stars = container.querySelectorAll('.star');
+        let selectedValue = 0;
+
+        stars.forEach(star => {
+          const value = parseInt(star.dataset.value);
+
+          star.addEventListener('click', () => {
+            selectedValue = value;
+            updateStars();
+          });
+
+          star.addEventListener('mouseover', () => {
+            highlightStars(value);
+          });
+
+          star.addEventListener('mouseout', () => {
+            highlightStars(selectedValue);
+          });
+        });
+
+        function updateStars() {
+          stars.forEach(star => {
+            const val = parseInt(star.dataset.value);
+            star.classList.toggle('filled', val <= selectedValue);
+          });
+        }
+
+        function highlightStars(value) {
+          stars.forEach(star => {
+            const val = parseInt(star.dataset.value);
+            star.classList.toggle('filled', val <= value);
+          });
+        }
+      }
+
+      setupStarRating('classificacao');
+      setupStarRating('dificuldade');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Livro de Receitas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>📖 Tudo Gostoso 📖</h1>
+    <h2>Direto ao ponto, cheio de receita boa, prática, e com comentários que te salvam de errar a mão.
+
+Quer algo mais "chef raiz"? Vai de Panelinha. Menos industrial, mais comida de verdade.</h2>
+  </header>
+
+  <nav>
+    <button onclick="showSection('buscar')" class="active">Buscar</button>
+    <button onclick="showSection('armazem')">Armazém</button>
+    <button onclick="showSection('sugestoes')">Sugestões</button>
+    <button onclick="showSection('categorias')">Categorias</button>
+    <button onclick="showSection('passo')">Passo a Passo</button>
+  </nav>
+
+  <main>
+    <div id="buscar" class="section active">
+      <div class="card">
+        <h2>Buscar por Ingredientes</h2>
+        <textarea placeholder="Digite os ingredientes..."></textarea>
+        <button class="recipe">Pesquisar</button>
+      </div>
+    </div>
+
+    <div id="armazem" class="section">
+      <div class="card">
+        <h2>Armazém de Receitas</h2>
+        <ul>
+          <li>Panqueca de Banana <a href="editar.html" class="edit-btn">Editar</a></li>
+          <li>Strogonoff de Frango <a href="editar.html" class="edit-btn">Editar</a></li>
+          <li>Arroz de Forno <a href="editar.html" class="edit-btn">Editar</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="sugestoes" class="section">
+      <div class="card">
+        <h2>Sugestão do Dia</h2>
+        <p>Que tal experimentar uma <strong>salada de grão-de-bico com abacate</strong>?</p>
+      </div>
+    </div>
+
+    <div id="categorias" class="section">
+      <div class="card">
+        <h2>Categoria de Receitas</h2>
+        <select>
+          <option>Massas</option>
+          <option>Doces</option>
+          <option>Veganas</option>
+          <option>Fitness</option>
+          <option>Tradicionais</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="passo" class="section">
+      <div class="card">
+        <h2>Passo a Passo</h2>
+        <ol>
+          <li>Escolha sua receita favorita.</li>
+          <li>Veja os ingredientes e modo de preparo.</li>
+          <li>Siga o passo a passo com calma.</li>
+          <li>Bom apetite!</li>
+        </ol>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
